@@ -1,4 +1,4 @@
-import cheerio from 'cheerio'
+import load from './cheerio/ext'
 
 // "2015年12月25日 10:30"という形式の文字列をDateオブジェクトにする
 function parseDate (str) {
@@ -18,14 +18,14 @@ function parseUserUrl (str) {
 
 function scrapeUserNode ($node) {
   return {
-    name: $node.text(),
+    name: $node.textrim(),
     userId: parseUserUrl($node.attr('href'))
   }
 }
 
 export default class Scraper {
   constructor (html) {
-    this.$ = cheerio.load(html)
+    this.$ = load(html)
   }
 
   getItems () {
@@ -39,31 +39,42 @@ export default class Scraper {
   scrapeWorkNode ($work) {
     const work = {}
     const self = this
-    work.name = $work.find('[itemprop="name"]').text()
-    work.workId = $work.find('[itemprop="name"]').attr('href').match(/^\/works\/(\d+)$/)[1] // Number型だとオーバーフローする
-    work.author = scrapeUserNode($work.find('[itemprop="author"]').eq(0))
-    work.reviewPoints = parseInt($work.find('.widget-work-reviewPoints').text().match(/^★(\d+)$/)[1], 10)
-    work.genre = $work.find('[itemprop="genre"]').text()
-    work.status = $work.find('.widget-work-statusLabel').text()
-    work.episodeCount = parseInt($work.find('.widget-work-episodeCount').text().match(/^(\d+)話$/)[1], 10)
-    work.characterCount = parseInt($work.find('[itemprop="characterCount"]').text().match(/^([\d,]+)文字$/)[1].replace(',', ''), 10)
-    work.dateModified = parseDate($work.find('[itemprop="dateModified"]').text().match(/^(.+) 更新$/)[1])
-    work.introductionSnippet = $work.find('.widget-work-introduction').text()
+    work.name = $work.fetchAt('[itemprop="name"]').textrim()
+    work.workId = $work.fetchAt('[itemprop="name"]').attr('href').match(/^\/works\/(\d+)$/)[1] // Number型だとオーバーフローする
+    work.author = scrapeUserNode($work.fetchAt('[itemprop="author"]'))
+    work.reviewPoints = parseInt($work.fetchAt('.widget-work-reviewPoints').textrim().match(/^★(\d+)$/)[1], 10)
+    work.genre = $work.fetchAt('[itemprop="genre"]').textrim()
+    work.status = $work.fetchAt('.widget-work-statusLabel').textrim()
+    work.episodeCount = parseInt($work.fetchAt('.widget-work-episodeCount').textrim().match(/^(\d+)話$/)[1], 10)
+    work.characterCount = parseInt($work.fetchAt('[itemprop="characterCount"]').textrim().match(/^([\d,]+)文字$/)[1].replace(',', ''), 10)
+    work.dateModified = parseDate($work.fetchAt('[itemprop="dateModified"]').textrim().match(/^(.+) 更新$/)[1])
+    work.introductionSnippet = $work.findAt('.widget-work-introduction').textrim() || null
     work.flags = $work.find('.widget-work-flags [itemprop="keywords"]')
-      .map(function () { return self.$(this).text() }).get()
+      .map(function () { return self.$(this).textrim() }).get()
     work.keywords = $work.find('.widget-work-tags [itemprop="keywords"]')
-      .map(function () { return self.$(this).text() }).get()
+      .map(function () { return self.$(this).textrim() }).get()
+    work.firstEpisodeId = $work.findAt('.widget-work-buttons a[href^="/works"][href*="/episodes/"]').attr('href').match(/^\/works\/\d+\/episodes\/(\d+)$/)[1] || null
     work.reviews = $work.find('[itemtype="https://schema.org/Review"]')
       .map(function () {
         const $review = self.$(this)
         return {
           // <a>にはitemprop="name"がないのでhrefを使う
-          author: scrapeUserNode($review.find('a[href^="/users/"]')),
+          author: scrapeUserNode($review.fetchAt('a[href^="/users/"]')),
 
-          body: $review.find('[itemprop="reviewBody"]').text()
+          body: $review.fetchAt('[itemprop="reviewBody"]').textrim()
         }
       }).get()
-    work.imageColor = $work.find('[itemtype="https://schema.org/Review"] [style*=color]').attr('style').match(/color:\s*([^;]+)/)[1]
+    work.imageColor = (() => {
+      // イメージカラーは必ず設定されているはずだが、レビューがないと小説一覧からは取得できない
+      const $review = $work.findAt('[itemtype="https://schema.org/Review"] [style*=color]')
+      if ($review.length) {
+        const m = $review.attr('style').match(/color:\s*([^;]+)/)
+        if (m && m[1]) {
+          return m[1]
+        }
+      }
+      return null
+    })()
     return work
   }
 }
