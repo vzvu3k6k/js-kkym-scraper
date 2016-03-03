@@ -6,7 +6,7 @@ import Scraper from '../src/recent-works-scraper'
 {
   const html = fs.readFileSync(path.resolve(__dirname, './fixtures/mini.html'))
   const scraper = new Scraper(html)
-  assert.deepEqual(scraper.getItems(), [{
+  assert.deepEqual([...scraper.getItems()], [{
     name: '我輩は猫である',
     workId: '1',
     author: {
@@ -31,7 +31,7 @@ import Scraper from '../src/recent-works-scraper'
 {
   const html = fs.readFileSync(path.resolve(__dirname, './fixtures/full.html'))
   const scraper = new Scraper(html)
-  assert.deepEqual(scraper.getItems(), [{
+  assert.deepEqual([...scraper.getItems()], [{
     name: '羅生門',
     workId: '1234567890123456789',
     author: {

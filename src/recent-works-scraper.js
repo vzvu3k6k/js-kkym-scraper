@@ -28,12 +28,11 @@ export default class Scraper {
     this.$ = load(html)
   }
 
-  getItems () {
+  * getItems () {
     const itemSelector = '.widget-media-genresWorkList .widget-work[itemtype="https://schema.org/CreativeWork"]'
-    const self = this
-    return this.$(itemSelector).map(function () {
-      return self.scrapeWorkNode(self.$(this))
-    }).get()
+    for (const that of this.$(itemSelector).get()) {
+      yield this.scrapeWorkNode(this.$(that))
+    }
   }
 
   scrapeWorkNode ($work) {
