@@ -9,6 +9,11 @@ function parseDate (str) {
   return new Date(year, month, day, hour, minute)
 }
 
+// "1,234,567"という形式の文字列を123456という数値にする
+function parseSeparatedDecimal (str) {
+  return parseInt(str.replace(/,/g, ''), 10)
+}
+
 // "/users/kaku-yomu"という形式の文字列を"kakuyomu"にする
 function parseUserUrl (str) {
   const m = str.match(/^\/users\/([-_0-9a-zA-Z]+)$/)
@@ -41,11 +46,11 @@ export default class Scraper {
     work.name = $work.fetchAt('[itemprop="name"]').textrim()
     work.workId = $work.fetchAt('[itemprop="name"]').attr('href').match(/^\/works\/(\d+)$/)[1] // Number型だとオーバーフローする
     work.author = scrapeUserNode($work.fetchAt('[itemprop="author"]'))
-    work.reviewPoints = parseInt($work.fetchAt('.widget-work-reviewPoints').textrim().match(/^★(\d+)$/)[1], 10)
+    work.reviewPoints = parseSeparatedDecimal($work.fetchAt('.widget-work-reviewPoints').textrim().match(/^★([\d,]+)$/)[1])
     work.genre = $work.fetchAt('[itemprop="genre"]').textrim()
     work.status = $work.fetchAt('.widget-work-statusLabel').textrim()
-    work.episodeCount = parseInt($work.fetchAt('.widget-work-episodeCount').textrim().match(/^(\d+)話$/)[1], 10)
-    work.characterCount = parseInt($work.fetchAt('[itemprop="characterCount"]').textrim().match(/^([\d,]+)文字$/)[1].replace(',', ''), 10)
+    work.episodeCount = parseSeparatedDecimal($work.fetchAt('.widget-work-episodeCount').textrim().match(/^([\d,]+)話$/)[1])
+    work.characterCount = parseSeparatedDecimal($work.fetchAt('[itemprop="characterCount"]').textrim().match(/^([\d,]+)文字$/)[1])
     work.dateModified = parseDate($work.fetchAt('[itemprop="dateModified"]').textrim().match(/^(.+) 更新$/)[1])
     work.introductionSnippet = $work.findAt('.widget-work-introduction').textrim() || null
     work.flags = $work.find('.widget-work-flags [itemprop="keywords"]')

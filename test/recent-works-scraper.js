@@ -38,7 +38,7 @@ import Scraper from '../src/recent-works-scraper'
       userId: 'akutagawa-ryunosuke',
       name: '芥川龍之介'
     },
-    reviewPoints: 5,
+    reviewPoints: 1234,
     genre: '歴史・時代',
     status: '完結済',
     episodeCount: 1,
