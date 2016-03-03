@@ -1,4 +1,5 @@
 import load from './cheerio/ext'
+import url from 'url'
 
 // "2015年12月25日 10:30"という形式の文字列をDateオブジェクトにする
 function parseDate (str) {
@@ -16,7 +17,8 @@ function parseSeparatedDecimal (str) {
 
 // "/users/kaku-yomu"という形式の文字列を"kakuyomu"にする
 function parseUserUrl (str) {
-  const m = str.match(/^\/users\/([-_0-9a-zA-Z]+)$/)
+  const u = url.parse(str)
+  const m = u.pathname.match(/^\/users\/([-_0-9a-zA-Z]+)$/)
   if (!m) throw new Error(`Invalid user URL: ${str}`)
   return m[1]
 }
