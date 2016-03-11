@@ -36,7 +36,7 @@ export default class Scraper {
   }
 
   * getItems () {
-    const itemSelector = '.widget-media-genresWorkList .widget-work[itemtype="https://schema.org/CreativeWork"]'
+    const itemSelector = '.widget-work[itemtype="https://schema.org/CreativeWork"]'
     for (const that of this.$(itemSelector).get()) {
       yield this.scrapeWorkNode(this.$(that))
     }
@@ -47,7 +47,7 @@ export default class Scraper {
     const self = this
     work.name = $work.fetchAt('[itemprop="name"]').textrim()
     work.workId = $work.fetchAt('[itemprop="name"]').attr('href').match(/^\/works\/(\d+)$/)[1] // Number型だとオーバーフローする
-    work.author = scrapeUserNode($work.fetchAt('[itemprop="author"]'))
+    work.author = scrapeUserNode($work.fetchAt('.widget-work-authorLabel'))
     work.reviewPoints = parseSeparatedDecimal($work.fetchAt('.widget-work-reviewPoints').textrim().match(/^★([\d,]+)$/)[1])
     work.genre = $work.fetchAt('[itemprop="genre"]').textrim()
     work.status = $work.fetchAt('.widget-work-statusLabel').textrim()
@@ -59,7 +59,6 @@ export default class Scraper {
       .map(function () { return self.$(this).textrim() }).get()
     work.keywords = $work.find('.widget-work-tags [itemprop="keywords"]')
       .map(function () { return self.$(this).textrim() }).get()
-    work.firstEpisodeId = $work.findAt('.widget-work-buttons a[href^="/works"][href*="/episodes/"]').attr('href').match(/^\/works\/\d+\/episodes\/(\d+)$/)[1] || null
     work.reviews = $work.find('[itemtype="https://schema.org/Review"]')
       .map(function () {
         const $review = self.$(this)
@@ -70,17 +69,7 @@ export default class Scraper {
           body: $review.fetchAt('[itemprop="reviewBody"]').textrim()
         }
       }).get()
-    work.imageColor = (() => {
-      // イメージカラーは必ず設定されているはずだが、レビューがないと小説一覧からは取得できない
-      const $review = $work.findAt('[itemtype="https://schema.org/Review"] [style*=color]')
-      if ($review.length) {
-        const m = $review.attr('style').match(/color:\s*([^;]+)/)
-        if (m && m[1]) {
-          return m[1]
-        }
-      }
-      return null
-    })()
+    work.imageColor = $work.findAt('.widget-work-workColor[style]').attr('style').match(/background-color:\s*([^;]+)/)[1]
     return work
   }
 }
