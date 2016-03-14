@@ -35,7 +35,11 @@ export default class Scraper {
     this.$ = load(html)
   }
 
-  * getItems () {
+  getItems () {
+    return [...this.eachItem()]
+  }
+
+  * eachItem () {
     const itemSelector = '.widget-work[itemtype="https://schema.org/CreativeWork"]'
     for (const that of this.$(itemSelector).get()) {
       yield this.scrapeWorkNode(this.$(that))

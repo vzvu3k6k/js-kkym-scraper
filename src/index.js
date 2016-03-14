@@ -1,1 +1,1 @@
-export { default as RecentWorksScraper } from './recent-works-scraper'
+export { default as WidgetWorksScraper } from './widget_works_scraper'
