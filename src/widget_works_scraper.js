@@ -56,17 +56,17 @@ export default class Scraper {
     const self = this
     work.name = $work.fetchAt('[itemprop="name"]').textrim()
     work.workId = $work.fetchAt('[itemprop="name"]').attr('href').match(/^\/works\/(\d+)$/)[1] // Number型だとオーバーフローする
-    work.author = scrapeUserNode($work.fetchAt('.widget-work-authorLabel'))
-    work.reviewPoints = parseSeparatedDecimal($work.fetchAt('.widget-work-reviewPoints').textrim().match(/^★([\d,]+)$/)[1])
+    work.author = scrapeUserNode($work.fetchAt('.widget-workCard-authorLabel'))
+    work.reviewPoints = parseSeparatedDecimal($work.fetchAt('.widget-workCard-reviewPoints').textrim().match(/^★([\d,]+)$/)[1])
     work.genre = $work.fetchAt('[itemprop="genre"]').textrim()
-    work.status = $work.fetchAt('.widget-work-statusLabel').textrim()
-    work.episodeCount = parseSeparatedDecimal($work.fetchAt('.widget-work-episodeCount').textrim().match(/^([\d,]+)話$/)[1])
+    work.status = $work.fetchAt('.widget-workCard-statusLabel').textrim()
+    work.episodeCount = parseSeparatedDecimal($work.fetchAt('.widget-workCard-episodeCount').textrim().match(/^([\d,]+)話$/)[1])
     work.characterCount = parseSeparatedDecimal($work.fetchAt('[itemprop="characterCount"]').textrim().match(/^([\d,]+)文字$/)[1])
     work.dateModified = parseDate($work.fetchAt('[itemprop="dateModified"]').textrim().match(/^(.+) 更新$/)[1])
-    work.introductionSnippet = $work.findAt('.widget-work-introduction').textrim() || null
-    work.flags = $work.find('.widget-work-flags [itemprop="keywords"]')
+    work.introductionSnippet = $work.findAt('.widget-workCard-introduction').textrim() || null
+    work.flags = $work.find('.widget-workCard-flags [itemprop="keywords"]')
       .map(function () { return self.$(this).textrim() }).get()
-    work.keywords = $work.find('.widget-work-tags [itemprop="keywords"]')
+    work.keywords = $work.find('.widget-workCard-tags [itemprop="keywords"]')
       .map(function () { return self.$(this).textrim() }).get()
     work.reviews = $work.find('[itemtype="https://schema.org/Review"]')
       .map(function () {
@@ -78,7 +78,7 @@ export default class Scraper {
           body: $review.fetchAt('[itemprop="reviewBody"]').textrim()
         }
       }).get()
-    work.imageColor = $work.findAt('.widget-work-workColor[style]').attr('style').match(/background-color:\s*([^;]+)/)[1]
+    work.imageColor = $work.findAt('.widget-workCard-workColor[style]').attr('style').match(/background-color:\s*([^;]+)/)[1]
     return work
   }
 }
