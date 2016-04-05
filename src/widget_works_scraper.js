@@ -1,4 +1,5 @@
-import load from './cheerio/ext'
+import cheerio from 'cheerio'
+import extend from './cheerio_extend'
 import url from 'url'
 
 // "2015年12月25日 10:30"という形式の文字列をDateオブジェクトにする
@@ -32,7 +33,11 @@ function scrapeUserNode ($node) {
 
 export default class Scraper {
   constructor (html) {
-    this.$ = load(html)
+    if (typeof html === 'string') {
+      this.$ = extend(cheerio.load(html))
+    } else {
+      this.$ = extend(html)
+    }
   }
 
   getItems () {

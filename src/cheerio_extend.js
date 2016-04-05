@@ -1,5 +1,3 @@
-import cheerio from 'cheerio'
-
 export const properties = {
   textrim: function () {
     return this.text().trim()
@@ -17,8 +15,7 @@ export const properties = {
   }
 }
 
-export const load = (...args) => {
-  const $ = cheerio.load(...args)
+export const extend = ($) => {
   for (const name of Object.keys(properties)) {
     Object.defineProperty(
       $.prototype,
@@ -31,4 +28,4 @@ export const load = (...args) => {
   return $
 }
 
-export default load
+export default extend
