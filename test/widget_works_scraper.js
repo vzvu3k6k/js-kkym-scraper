@@ -1,14 +1,13 @@
 import assert from 'assert'
 import Scraper from '../src/widget_works_scraper'
-import { get } from './util'
+import { getDocument } from './util'
 
 describe('WidgetWorksScraper', () => {
   it('https://kakuyomu.jp/users/pureone/works を正しくパースする', () => {
-    return get('https://kakuyomu.jp/users/pureone/works')
-      .then((html) => {
-        const scraper = new Scraper(html)
-        const work = [...scraper.getItems()].pop()
-
+    return getDocument('https://kakuyomu.jp/users/pureone/works')
+      .then((document) => {
+        const scraper = new Scraper(document)
+        const work = [...scraper.getItems()].pop().toPlainObject()
         assert.deepEqual(work, {
           name: 'テスト',
           workId: '4852201425154936607',
@@ -32,10 +31,10 @@ describe('WidgetWorksScraper', () => {
   })
 
   it('https://kakuyomu.jp/users/kawango/works を正しくパースする', () => {
-    return get('https://kakuyomu.jp/users/kawango/works')
-      .then((html) => {
-        const scraper = new Scraper(html)
-        const work = [...scraper.getItems()].pop()
+    return getDocument('https://kakuyomu.jp/users/kawango/works')
+      .then((document) => {
+        const scraper = new Scraper(document)
+        const work = [...scraper.getItems()].pop().toPlainObject()
 
         assert(work.reviewPoints > 0)
         delete work.reviewPoints

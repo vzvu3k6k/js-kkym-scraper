@@ -1,4 +1,5 @@
 import https from 'https'
+import { jsdom } from 'jsdom'
 import path from 'path'
 import replay from 'replay'
 
@@ -18,4 +19,13 @@ export function get (url) {
       res.on('error', (err) => { reject(err) })
     }).on('error', (err) => { reject(err) })
   })
+}
+
+export function getDocument (url) {
+  return get(url).then((body) => jsdom(body, {
+    features: {
+      FetchExternalResources: false,
+      ProcessExternalResources: false
+    }
+  }))
 }
