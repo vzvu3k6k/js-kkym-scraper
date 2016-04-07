@@ -7,7 +7,10 @@ describe('WidgetWorksScraper', () => {
     return getDocument('https://kakuyomu.jp/users/pureone/works')
       .then((document) => {
         const scraper = new Scraper(document)
-        const work = [...scraper.getItems()].pop().toPlainObject()
+        const works = [...scraper.getItems()]
+        assert.equal(works.length, 1)
+
+        const work = works[0].toPlainObject()
         assert.deepEqual(work, {
           name: 'テスト',
           workId: '4852201425154936607',
@@ -34,7 +37,10 @@ describe('WidgetWorksScraper', () => {
     return getDocument('https://kakuyomu.jp/users/kawango/works')
       .then((document) => {
         const scraper = new Scraper(document)
-        const work = [...scraper.getItems()].pop().toPlainObject()
+        const works = [...scraper.getItems()]
+        assert.equal(works.length, 1)
+
+        const work = works[0].toPlainObject()
 
         assert(work.reviewPoints > 0)
         delete work.reviewPoints
