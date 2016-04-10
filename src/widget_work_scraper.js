@@ -34,8 +34,8 @@ function scrapeGenreNode ($node) {
 
 function scrapeUserNode ($node) {
   return {
-    name: $node.textContent.trim(),
-    userId: parseUserUrl($node.getAttribute('href'))
+    id: parseUserUrl($node.getAttribute('href')),
+    name: $node.textContent.trim()
   }
 }
 

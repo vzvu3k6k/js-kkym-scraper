@@ -15,7 +15,7 @@ describe('WidgetWorksScraper', () => {
           name: 'テスト',
           workId: '4852201425154936607',
           author: {
-            userId: 'pureone',
+            id: 'pureone',
             name: '@pureone'
           },
           reviewPoints: 0,
@@ -62,7 +62,7 @@ describe('WidgetWorksScraper', () => {
 
         assert.strictEqual(work.reviews.length, 2)
         assert.deepStrictEqual(work.reviews[0].author, {
-          userId: 'kawango',
+          id: 'kawango',
           name: 'かわんご'
         })
         assert(work.reviews[0].body.length > 0)
@@ -71,7 +71,7 @@ describe('WidgetWorksScraper', () => {
         assert.deepStrictEqual(work, {
           workId: '1177354054880357352',
           author: {
-            userId: 'kawango',
+            id: 'kawango',
             name: 'かわんご'
           },
           genre: { id: 'horror', name: 'ホラー' },
