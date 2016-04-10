@@ -22,6 +22,16 @@ function parseUserUrl (str) {
   return m[1]
 }
 
+function scrapeGenreNode ($node) {
+  const u = url.parse($node.getAttribute('href'))
+  const m = u.pathname.match(/^\/genres\/([^/]+)/)
+  if (!m) throw new Error(`Invalid genre URL: ${u.pathname}`)
+  return {
+    id: m[1],
+    name: $node.textContent
+  }
+}
+
 function scrapeUserNode ($node) {
   return {
     name: $node.textContent.trim(),
@@ -62,7 +72,7 @@ export default class Scraper {
   }
 
   get genre () {
-    return this.$elem.querySelector('[itemprop="genre"]').textContent.trim()
+    return scrapeGenreNode(this.$elem.querySelector('[itemprop="genre"]'))
   }
 
   get status () {

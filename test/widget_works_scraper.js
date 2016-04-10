@@ -19,7 +19,7 @@ describe('WidgetWorksScraper', () => {
             name: '@pureone'
           },
           reviewPoints: 0,
-          genre: 'その他',
+          genre: { id: 'others', name: 'その他' },
           status: '連載中',
           episodeCount: 1,
           characterCount: 41,
@@ -74,7 +74,7 @@ describe('WidgetWorksScraper', () => {
             userId: 'kawango',
             name: 'かわんご'
           },
-          genre: 'ホラー',
+          genre: { id: 'horror', name: 'ホラー' },
           status: '連載中',
           flags: ['残酷描写有り', '暴力描写有り', '性描写有り'],
           keywords: ['ハートフルシリーズ', 'ピアピア動画', 'ＳＦ'],
