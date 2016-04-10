@@ -12,11 +12,11 @@ export default class Scraper {
   * eachItem () {
     const itemSelector = '.widget-work[itemtype="https://schema.org/CreativeWork"]'
     for (const node of this.$elem.querySelectorAll(itemSelector)) {
-      yield this.scrapeWorkNode(node)
+      yield this.scrapeItem(node)
     }
   }
 
-  scrapeWorkNode ($work) {
+  scrapeItem ($work) {
     return new WidgetWorkScraper($work)
   }
 }
