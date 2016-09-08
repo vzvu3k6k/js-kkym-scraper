@@ -3,6 +3,10 @@ import { jsdom } from 'jsdom'
 import path from 'path'
 import replay from 'replay'
 
+// workaround for https://github.com/assaf/node-replay/issues/116
+import replayProxy from 'replay/lib/replay/proxy'
+replayProxy.prototype._readableState = {}
+
 replay.fixtures = path.join(__dirname, 'fixtures')
 
 export function get (url) {
