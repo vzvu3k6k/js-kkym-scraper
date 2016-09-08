@@ -20,6 +20,7 @@
   "private": true,
   "scripts": {
     "build": "rm -rf lib && babel --source-maps true --out-dir lib src",
+    "lint": "eslint src test",
     "test": "mocha"
   }
 }
