@@ -14,7 +14,7 @@ function parseSeparatedDecimal (str) {
   return parseInt(str.replace(/,/g, ''), 10)
 }
 
-// "/users/kaku-yomu"という形式の文字列を"kakuyomu"にする
+// "/users/kaku-yomu"という形式の文字列を"kaku-yomu"にする
 function parseUserUrl (str) {
   const u = url.parse(str)
   const m = u.pathname.match(/^\/users\/([-_0-9a-zA-Z]+)$/)
