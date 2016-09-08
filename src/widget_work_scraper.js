@@ -4,9 +4,8 @@ import url from 'url'
 function parseDate (str) {
   const m = str.match(/^(\d+)年(\d+)月(\d+)日 (\d+):(\d+)$/)
   if (!m) throw new Error(`Invalid date string: ${str}`)
-  let [year, month, day, hour, minute] = m.slice(1).map((n) => parseInt(n, 10))
-  month-- // monthは0から始まる
-  return new Date(year, month, day, hour, minute)
+  const [year, month, day, hour, minute] = m.slice(1).map((n) => parseInt(n, 10))
+  return new Date(year, month - 1, day, hour, minute) // monthは0から始まる
 }
 
 // "1,234,567"という形式の文字列を123456という数値にする
